@@ -1,0 +1,10 @@
+# AgentOS Weather Agent Example - Dependencies
+
+# AG2 framework with A2A support
+ag2[a2a]>=0.9.0
+
+# HTTP client for API calls
+httpx>=0.27.0
+
+# ASGI server
+uvicorn>=0.30.0
