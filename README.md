@@ -85,20 +85,6 @@ The agent publishes an A2A-compatible agent card that describes its capabilities
 }
 ```
 
-## Registering with AgentOS
-
-To make this agent discoverable by AgentOS, you can register it with an AgentOS registry:
-
-```bash
-# Set your AgentOS registry URL
-export AGENTOS_REGISTRY_URL="https://your-agentos-instance.com"
-
-# Register the agent (requires the agent to be running)
-curl -X POST "$AGENTOS_REGISTRY_URL/api/agents/register" \
-  -H "Content-Type: application/json" \
-  -d '{"url": "http://your-agent-host:8000/weather/"}'
-```
-
 ## Customization
 
 ### Changing the LLM
