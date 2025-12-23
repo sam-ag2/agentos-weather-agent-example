@@ -1,10 +1,23 @@
-# AgentOS Weather Agent Example - Dependencies
+# Weather Agent Examples - Dependencies
+# Install all: pip install -r requirements.txt
+# Or install specific framework dependencies as needed
 
-# AG2 framework with A2A support
-ag2[a2a]>=0.9.0
-
-# HTTP client for API calls
+# Shared dependency (all frameworks)
 httpx>=0.27.0
 
-# ASGI server
+# AG2 (AutoGen) with A2A support
+ag2[a2a]>=0.9.0
 uvicorn>=0.30.0
+
+# Google ADK (Agent Development Kit)
+google-adk>=0.1.0
+
+# OpenAI Agents SDK
+openai-agents>=0.0.5
+
+# LangGraph (LangChain)
+langgraph>=0.2.0
+langchain-openai>=0.2.0
+
+# CrewAI
+crewai>=0.80.0
