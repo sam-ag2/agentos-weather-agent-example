@@ -67,6 +67,109 @@ python agent_crewai.py
 
 ---
 
+## Unified A2A Server
+
+For production deployment, use the unified server that hosts all framework agents with A2A-compatible endpoints.
+
+### Run Locally
+
+```bash
+# Set API keys
+export OPENAI_API_KEY="your-api-key"
+export GOOGLE_API_KEY="your-api-key"  # Optional, for Google ADK
+
+# Run the unified server
+uvicorn server:app --host 0.0.0.0 --port 8000 --reload
+```
+
+### Available Endpoints
+
+Once running, each agent is available at its own path:
+
+| Agent | Agent Card | Message Endpoint |
+|-------|------------|------------------|
+| AG2 | `http://localhost:8000/ag2/.well-known/agent.json` | `POST http://localhost:8000/ag2/` |
+| Google ADK | `http://localhost:8000/google-adk/.well-known/agent.json` | `POST http://localhost:8000/google-adk/` |
+| OpenAI SDK | `http://localhost:8000/openai-sdk/.well-known/agent.json` | `POST http://localhost:8000/openai-sdk/` |
+| LangGraph | `http://localhost:8000/langgraph/.well-known/agent.json` | `POST http://localhost:8000/langgraph/` |
+| CrewAI | `http://localhost:8000/crewai/.well-known/agent.json` | `POST http://localhost:8000/crewai/` |
+
+### API Reference
+
+**List all agents:**
+```bash
+curl http://localhost:8000/
+```
+
+**Get agent card:**
+```bash
+curl http://localhost:8000/ag2/.well-known/agent.json
+```
+
+**Send a message (A2A JSON-RPC 2.0):**
+```bash
+curl -X POST http://localhost:8000/ag2/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": "1",
+    "method": "message/send",
+    "params": {
+      "message": {
+        "parts": [{"kind": "text", "text": "What is the weather in Tokyo?"}]
+      }
+    }
+  }'
+```
+
+---
+
+## Railway Deployment
+
+Deploy the unified server to Railway for production use.
+
+### Deploy via GitHub
+
+1. Push this repository to GitHub
+2. Create a new Railway project
+3. Connect your GitHub repository
+4. Set environment variables:
+   - `OPENAI_API_KEY` - Required for AG2, OpenAI SDK, LangGraph, CrewAI
+   - `GOOGLE_API_KEY` - Required for Google ADK
+   - `HOST_URL` - Your Railway app URL (e.g., `https://your-app.railway.app`)
+5. Deploy
+
+### Deploy via Railway CLI
+
+```bash
+# Install Railway CLI
+npm install -g @railway/cli
+
+# Login and deploy
+railway login
+railway init
+railway up
+
+# Set environment variables
+railway variables set OPENAI_API_KEY=your-key
+railway variables set GOOGLE_API_KEY=your-key
+railway variables set HOST_URL=https://your-app.railway.app
+```
+
+### Register with AgentOS
+
+After deployment, register each agent using its agent card URL:
+
+```
+https://your-app.railway.app/ag2/.well-known/agent.json
+https://your-app.railway.app/google-adk/.well-known/agent.json
+https://your-app.railway.app/openai-sdk/.well-known/agent.json
+https://your-app.railway.app/langgraph/.well-known/agent.json
+https://your-app.railway.app/crewai/.well-known/agent.json
+```
+
+---
+
 ## Framework Examples
 
 ### AG2 (AutoGen)
@@ -202,6 +305,8 @@ result = crew.kickoff()
 
 ```
 agentos-weather-agent-example/
+    server.py              # Unified A2A server (all frameworks)
+    a2a_wrapper.py         # A2A protocol utilities
     weather_agent.py       # AG2 implementation with A2A server
     agent_google_adk.py    # Google ADK implementation
     agent_openai_sdk.py    # OpenAI Agents SDK implementation
@@ -209,6 +314,7 @@ agentos-weather-agent-example/
     agent_crewai.py        # CrewAI implementation
     weather_utils.py       # Shared weather API functions
     requirements.txt       # All framework dependencies
+    Dockerfile             # Railway/Docker deployment
     README.md              # This file
 ```
 
